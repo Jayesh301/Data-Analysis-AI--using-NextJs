@@ -32,7 +32,7 @@ export default function CustomAnalysis({
         Detailed Insights
       </h3>
       <div className="space-y-3">
-        {data.insights?.map((insight: string, index: number) => (
+        {data?.insights?.map((insight: string, index: number) => (
           <div
             key={index}
             className={`${
@@ -48,6 +48,21 @@ export default function CustomAnalysis({
             </p>
           </div>
         ))}
+        {!data?.insights && (
+          <div
+            className={`${
+              isDarkMode ? "bg-gray-700/50" : "bg-gray-100"
+            } border-l-4 border-gray-400 p-4 rounded-r-lg`}
+          >
+            <p
+              className={`text-sm ${
+                isDarkMode ? "text-gray-300" : "text-gray-600"
+              }`}
+            >
+              No insights available yet. Please complete the analysis first.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -62,7 +77,7 @@ export default function CustomAnalysis({
         Actionable Recommendations
       </h3>
       <div className="space-y-3">
-        {data.recommendations?.map((rec: string, index: number) => (
+        {data?.recommendations?.map((rec: string, index: number) => (
           <div
             key={index}
             className={`${
@@ -78,6 +93,22 @@ export default function CustomAnalysis({
             </p>
           </div>
         ))}
+        {!data?.recommendations && (
+          <div
+            className={`${
+              isDarkMode ? "bg-gray-700/50" : "bg-gray-100"
+            } border-l-4 border-gray-400 p-4 rounded-r-lg`}
+          >
+            <p
+              className={`text-sm ${
+                isDarkMode ? "text-gray-300" : "text-gray-600"
+              }`}
+            >
+              No recommendations available yet. Please complete the analysis
+              first.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -263,7 +294,7 @@ export default function CustomAnalysis({
       <div className="min-h-[200px]">{renderContent()}</div>
 
       {/* Summary Stats */}
-      {data.summary && (
+      {data?.summary && (
         <div
           className={`mt-6 p-4 ${summaryBgClass} rounded-lg border ${summaryBorderClass}`}
         >
