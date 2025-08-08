@@ -11,7 +11,7 @@ export interface AnalysisRequest {
 
 export interface QueryRequest {
   query: string;
-  analysisData: any;
+  analysisData: AnalysisResponse;
   fileContent?: string;
 }
 
@@ -82,7 +82,7 @@ class GeminiService {
       // Try to parse JSON response
       try {
         return JSON.parse(text);
-      } catch (parseError) {
+      } catch {
         // Fallback to mock data if parsing fails
         return this.getMockAnalysis();
       }
@@ -117,7 +117,7 @@ class GeminiService {
       
       try {
         return JSON.parse(text);
-      } catch (parseError) {
+      } catch {
         return {
           answer: "I'm sorry, I couldn't process that query. Please try rephrasing your question.",
         };

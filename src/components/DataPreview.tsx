@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FileText, Eye, Download } from "lucide-react";
 
 interface DataPreviewProps {
   file: File;
@@ -34,7 +33,7 @@ export default function DataPreview({ file, isDarkMode }: DataPreviewProps) {
             ["Data 4", "Data 5", "Data 6"],
           ]);
         }
-      } catch (err) {
+      } catch {
         setError("Error reading file");
       } finally {
         setIsLoading(false);

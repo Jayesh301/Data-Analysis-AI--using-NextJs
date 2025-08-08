@@ -10,9 +10,24 @@ import {
   Sparkles,
 } from "lucide-react";
 
+interface AnalysisData {
+  summary: {
+    totalRows: number;
+    totalColumns: number;
+    missingValues: number;
+  };
+  insights: string[];
+  recommendations: string[];
+  correlations?: Array<{
+    var1: string;
+    var2: string;
+    correlation: number;
+  }>;
+}
+
 interface AutoAnalysisProps {
   file: File;
-  onAnalysisComplete: (data: any) => void;
+  onAnalysisComplete: (data: AnalysisData) => void;
   isAnalyzing: boolean;
   setIsAnalyzing: (analyzing: boolean) => void;
   isDarkMode: boolean;
@@ -25,7 +40,9 @@ export default function AutoAnalysis({
   setIsAnalyzing,
   isDarkMode,
 }: AutoAnalysisProps) {
-  const [analysisResults, setAnalysisResults] = useState<any>(null);
+  const [analysisResults, setAnalysisResults] = useState<AnalysisData | null>(
+    null
+  );
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
 
@@ -348,16 +365,16 @@ export default function AutoAnalysis({
           </div>
 
           {/* Top Correlations */}
-          {analysisResults.correlations.length > 0 && (
-            <div
-              className={`${cardBgClass} border ${cardBorderClass} rounded-lg p-6`}
-            >
-              <h3 className={`font-semibold ${textClass} mb-4`}>
-                Top Correlations
-              </h3>
-              <div className="space-y-3">
-                {analysisResults.correlations.map(
-                  (corr: any, index: number) => (
+          {analysisResults.correlations &&
+            analysisResults.correlations.length > 0 && (
+              <div
+                className={`${cardBgClass} border ${cardBorderClass} rounded-lg p-6`}
+              >
+                <h3 className={`font-semibold ${textClass} mb-4`}>
+                  Top Correlations
+                </h3>
+                <div className="space-y-3">
+                  {analysisResults.correlations?.map((corr, index: number) => (
                     <div
                       key={index}
                       className={`${
@@ -399,11 +416,10 @@ export default function AutoAnalysis({
                         ></div>
                       </div>
                     </div>
-                  )
-                )}
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
         </div>
       ) : (
         <div className={`text-center ${textTertiaryClass} py-8`}>

@@ -3,15 +3,24 @@
 import { useState } from "react";
 import { Search, Send, MessageSquare, Sparkles } from "lucide-react";
 
+interface AnalysisData {
+  summary?: {
+    totalRows: number;
+    totalColumns: number;
+    missingValues: number;
+  };
+  insights?: string[];
+  recommendations?: string[];
+}
+
 interface QueryInterfaceProps {
   uploadedFile: File | null;
-  analysisData: any;
+  analysisData: AnalysisData | null;
   isDarkMode: boolean;
 }
 
 export default function QueryInterface({
   uploadedFile,
-  analysisData,
   isDarkMode,
 }: QueryInterfaceProps) {
   const [query, setQuery] = useState("");

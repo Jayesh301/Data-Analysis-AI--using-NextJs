@@ -1,20 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {
-  BarChart,
-  LineChart,
-  PieChart,
-  TrendingUp,
-  BarChart3,
-  Activity,
-  Target,
-  Calendar,
-  DollarSign,
-  Users,
-  Brain,
-  Sparkles,
-} from "lucide-react";
+import { Brain, Sparkles } from "lucide-react";
 import dynamic from "next/dynamic";
 import AutoAnalysis from "./AutoAnalysis";
 
@@ -28,11 +15,21 @@ const Plot = dynamic(() => import("react-plotly.js"), {
   ),
 });
 
+interface AnalysisData {
+  summary?: {
+    totalRows: number;
+    totalColumns: number;
+    missingValues: number;
+  };
+  insights?: string[];
+  recommendations?: string[];
+}
+
 interface VisualizationsProps {
-  data: any;
+  data: AnalysisData | null;
   uploadedFile?: File | null;
   isDarkMode: boolean;
-  onAnalysisComplete?: (data: any) => void;
+  onAnalysisComplete?: (data: AnalysisData) => void;
   isAnalyzing?: boolean;
   setIsAnalyzing?: (analyzing: boolean) => void;
 }
@@ -46,6 +43,48 @@ interface ColumnAnalysis {
   topValues?: { value: string; count: number }[];
 }
 
+interface ChartData {
+  id: string;
+  title: string;
+  description: string;
+  type: string;
+  data: {
+    data: Array<{
+      x?: string[] | number[];
+      y?: number[];
+      type: string;
+      mode?: string;
+      marker?: Record<string, unknown>;
+      line?: Record<string, unknown>;
+      nbinsx?: number;
+      z?: number[][];
+      colorscale?: string;
+      zmid?: number;
+    }>;
+    layout: {
+      title: string;
+      xaxis?: { title: string };
+      yaxis?: { title: string };
+      width: number;
+      height: number;
+      margin: { l: number; r: number; t: number; b: number };
+      paper_bgcolor: string;
+      plot_bgcolor: string;
+      font: { color: string };
+      annotations?: Array<{
+        text: string;
+        showarrow: boolean;
+        x: number;
+        y: number;
+        xref: string;
+        yref: string;
+        font: { size: number; color: string };
+      }>;
+    };
+  };
+  priority: string;
+}
+
 export default function Visualizations({
   data,
   uploadedFile,
@@ -54,10 +93,9 @@ export default function Visualizations({
   isAnalyzing,
   setIsAnalyzing,
 }: VisualizationsProps) {
-  const [dataset, setDataset] = useState<any[]>([]);
+  const [dataset, setDataset] = useState<Record<string, string>[]>([]);
   const [columns, setColumns] = useState<string[]>([]);
-  const [columnAnalysis, setColumnAnalysis] = useState<ColumnAnalysis[]>([]);
-  const [recommendedCharts, setRecommendedCharts] = useState<any[]>([]);
+  const [recommendedCharts, setRecommendedCharts] = useState<ChartData[]>([]);
 
   useEffect(() => {
     if (uploadedFile) {
@@ -90,7 +128,6 @@ export default function Visualizations({
 
         // Analyze columns intelligently
         const analysis = analyzeColumns(headers, dataRows);
-        setColumnAnalysis(analysis);
 
         // Generate recommended charts based on analysis
         const charts = generateRecommendedCharts(analysis, dataRows);
@@ -612,7 +649,6 @@ export default function Visualizations({
   const bgClass = isDarkMode ? "bg-gray-800/50" : "bg-white";
   const borderClass = isDarkMode ? "border-gray-600" : "border-gray-200";
   const textClass = isDarkMode ? "text-white" : "text-gray-800";
-  const textSecondaryClass = isDarkMode ? "text-gray-300" : "text-gray-600";
   const infoBgClass = isDarkMode ? "bg-blue-500/10" : "bg-blue-50";
   const infoBorderClass = isDarkMode ? "border-blue-500/30" : "border-blue-200";
   const infoTextClass = isDarkMode ? "text-blue-200" : "text-blue-800";
@@ -655,8 +691,8 @@ export default function Visualizations({
         >
           <p className={`text-sm ${infoTextClass}`}>
             <strong>Smart Analysis:</strong> Based on your dataset structure,
-            we've generated {recommendedCharts.length} meaningful visualizations
-            that highlight important patterns and relationships.
+            we&apos;ve generated {recommendedCharts.length} meaningful
+            visualizations that highlight important patterns and relationships.
           </p>
         </div>
 

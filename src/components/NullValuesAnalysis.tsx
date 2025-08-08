@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { AlertTriangle, CheckCircle, Info } from "lucide-react";
 
 interface NullValuesAnalysisProps {
-  dataset: any[];
+  dataset: Record<string, string>[];
   columns: string[];
   isDarkMode: boolean;
 }

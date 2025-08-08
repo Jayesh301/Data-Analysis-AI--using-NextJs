@@ -3,15 +3,24 @@
 import { useState } from "react";
 import { Settings, Download, Share2, Filter, Target } from "lucide-react";
 
+interface AnalysisData {
+  summary?: {
+    totalRows: number;
+    totalColumns: number;
+    missingValues: number;
+  };
+  insights?: string[];
+  recommendations?: string[];
+}
+
 interface CustomAnalysisProps {
-  data: any;
+  data: AnalysisData | null;
   file: File | null;
   isDarkMode: boolean;
 }
 
 export default function CustomAnalysis({
   data,
-  file,
   isDarkMode,
 }: CustomAnalysisProps) {
   const [selectedAnalysis, setSelectedAnalysis] = useState("insights");

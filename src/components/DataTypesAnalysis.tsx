@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 
 interface DataTypesAnalysisProps {
-  dataset: any[];
+  dataset: Record<string, string>[];
   columns: string[];
   isDarkMode: boolean;
 }

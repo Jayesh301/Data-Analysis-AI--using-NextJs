@@ -6,16 +6,25 @@ import FileUploader from "@/components/FileUploader";
 import DataPreview from "@/components/DataPreview";
 import DataTypesAnalysis from "@/components/DataTypesAnalysis";
 import NullValuesAnalysis from "@/components/NullValuesAnalysis";
-import AutoAnalysis from "@/components/AutoAnalysis";
 import QueryInterface from "@/components/QueryInterface";
 import Visualizations from "@/components/Visualizations";
 import CustomAnalysis from "@/components/CustomAnalysis";
 
+interface AnalysisData {
+  summary?: {
+    totalRows: number;
+    totalColumns: number;
+    missingValues: number;
+  };
+  insights?: string[];
+  recommendations?: string[];
+}
+
 export default function Home() {
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
-  const [analysisData, setAnalysisData] = useState<any>(null);
+  const [analysisData, setAnalysisData] = useState<AnalysisData | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [dataset, setDataset] = useState<any[]>([]);
+  const [dataset, setDataset] = useState<Record<string, string>[]>([]);
   const [columns, setColumns] = useState<string[]>([]);
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [activeSection, setActiveSection] = useState<
@@ -46,7 +55,7 @@ export default function Home() {
           .map((h) => h.trim().replace(/"/g, ""));
         const dataRows = lines.slice(1).map((line) => {
           const values = line.split(",").map((v) => v.trim().replace(/"/g, ""));
-          const row: any = {};
+          const row: Record<string, string> = {};
           headers.forEach((header, index) => {
             row[header] = values[index] || "";
           });
@@ -61,7 +70,7 @@ export default function Home() {
     }
   };
 
-  const handleAnalysisComplete = (data: any) => {
+  const handleAnalysisComplete = (data: AnalysisData) => {
     setAnalysisData(data);
     setIsAnalyzing(false);
     // Stay in visualizations section since insights are now included there
